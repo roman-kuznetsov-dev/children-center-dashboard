@@ -5,6 +5,7 @@ Django settings for backend project.
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+import dj_database_url
 
 # Загружаем переменные из .env
 load_dotenv()
@@ -31,11 +32,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Сторонние библиотеки
     'rest_framework',
     'corsheaders',
     'drf_yasg',
-    # Наши приложения
     'users',
     'sales',
 ]
@@ -73,17 +72,19 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 
 # ============================================================
-# DATABASE — PostgreSQL (рабочая версия)
+# DATABASE — через dj_database_url (читает из .env)
 # ============================================================
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dashboard_db',
-        'USER': 'postgres',
-        'PASSWORD': '12345',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
+    'default': dj_database_url.config(
+        default=(
+            f"postgres://{os.getenv('DB_USER', 'postgres')}:"
+            f"{os.getenv('DB_PASSWORD', '')}@"
+            f"{os.getenv('DB_HOST', 'localhost')}:"
+            f"{os.getenv('DB_PORT', '5432')}/"
+            f"{os.getenv('DB_NAME', 'dashboard_db')}"
+        ),
+        conn_max_age=600,
+    )
 }
 
 
@@ -125,22 +126,21 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Кастомная модель пользователя
 AUTH_USER_MODEL = 'users.User'
 
 
 # ============================================================
-# CORS и CSRF — рабочая версия
+# CORS и CSRF
 # ============================================================
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',
-]
+CORS_ALLOWED_ORIGINS = os.getenv(
+    'CORS_ALLOWED_ORIGINS',
+    'http://localhost:5173'
+).split(',')
 
-CSRF_TRUSTED_ORIGINS = [
-    'http://127.0.0.1:8000',
-    'http://localhost:8000',
-    'http://localhost:5173',
-]
+CSRF_TRUSTED_ORIGINS = os.getenv(
+    'CSRF_TRUSTED_ORIGINS',
+    'http://127.0.0.1:8000,http://localhost:8000,http://localhost:5173'
+).split(',')
 
 
 # ============================================================
