@@ -5,7 +5,6 @@ Django settings for backend project.
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-import dj_database_url
 
 # Загружаем переменные из .env
 load_dotenv()
@@ -74,20 +73,17 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 
 # ============================================================
-# DATABASE
-# Читается из переменных окружения (.env локально, Render/CI — из env)
+# DATABASE — PostgreSQL (рабочая версия)
 # ============================================================
 DATABASES = {
-    'default': dj_database_url.config(
-        default=(
-            f"postgres://{os.getenv('DB_USER', 'postgres')}:"
-            f"{os.getenv('DB_PASSWORD', '')}@"
-            f"{os.getenv('DB_HOST', 'localhost')}:"
-            f"{os.getenv('DB_PORT', '5432')}/"
-            f"{os.getenv('DB_NAME', 'dashboard_db')}"
-        ),
-        conn_max_age=600,
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'dashboard_db',
+        'USER': 'postgres',
+        'PASSWORD': '12345',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
 }
 
 
@@ -134,17 +130,17 @@ AUTH_USER_MODEL = 'users.User'
 
 
 # ============================================================
-# CORS и CSRF
+# CORS и CSRF — рабочая версия
 # ============================================================
-CORS_ALLOWED_ORIGINS = os.getenv(
-    'CORS_ALLOWED_ORIGINS',
-    'http://localhost:5173'
-).split(',')
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',
+]
 
-CSRF_TRUSTED_ORIGINS = os.getenv(
-    'CSRF_TRUSTED_ORIGINS',
-    'http://127.0.0.1:8000,http://localhost:8000'
-).split(',')
+CSRF_TRUSTED_ORIGINS = [
+    'http://127.0.0.1:8000',
+    'http://localhost:8000',
+    'http://localhost:5173',
+]
 
 
 # ============================================================
