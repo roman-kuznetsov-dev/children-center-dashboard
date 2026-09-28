@@ -220,22 +220,22 @@ export const Dashboard = () => {
         )}
 
         {/* KPI Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white p-6 rounded-xl shadow-md border-l-4 border-blue-500">
-            <p className="text-sm text-gray-500">Выручка</p>
-            <p className="text-2xl font-bold">{formatCurrency(Number(data.kpi.total_revenue) || 0)}</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-4 md:mb-6">
+          <div className="bg-white p-4 md:p-6 rounded-xl shadow-md border-l-4 border-blue-500">
+            <p className="text-xs md:text-sm text-gray-500">Выручка</p>
+            <p className="text-lg md:text-2xl font-bold">{formatCurrency(Number(data.kpi.total_revenue) || 0)}</p>
           </div>
-          <div className="bg-white p-6 rounded-xl shadow-md border-l-4 border-green-500">
-            <p className="text-sm text-gray-500">Продаж</p>
-            <p className="text-2xl font-bold">{data.kpi.total_orders || 0}</p>
+          <div className="bg-white p-4 md:p-6 rounded-xl shadow-md border-l-4 border-green-500">
+            <p className="text-xs md:text-sm text-gray-500">Продаж</p>
+            <p className="text-lg md:text-2xl font-bold">{data.kpi.total_orders || 0}</p>
           </div>
-          <div className="bg-white p-6 rounded-xl shadow-md border-l-4 border-purple-500">
-            <p className="text-sm text-gray-500">Гости (входные билеты)</p>
-            <p className="text-2xl font-bold">{data.kpi.total_guests || 0}</p>
+          <div className="bg-white p-4 md:p-6 rounded-xl shadow-md border-l-4 border-purple-500">
+            <p className="text-xs md:text-sm text-gray-500">Гости (входные билеты)</p>
+            <p className="text-lg md:text-2xl font-bold">{data.kpi.total_guests || 0}</p>
           </div>
-          <div className="bg-white p-6 rounded-xl shadow-md border-l-4 border-orange-500">
-            <p className="text-sm text-gray-500">Ср. чек</p>
-            <p className="text-2xl font-bold">{formatCurrency(Number(data.kpi.avg_check) || 0)}</p>
+          <div className="bg-white p-4 md:p-6 rounded-xl shadow-md border-l-4 border-orange-500">
+            <p className="text-xs md:text-sm text-gray-500">Ср. чек</p>
+            <p className="text-lg md:text-2xl font-bold">{formatCurrency(Number(data.kpi.avg_check) || 0)}</p>
           </div>
         </div>
 
