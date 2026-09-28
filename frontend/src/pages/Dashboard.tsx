@@ -300,45 +300,45 @@ export const Dashboard = () => {
           <div className="bg-white p-4 md:p-6 rounded-xl shadow-md">
             <h3 className="text-base md:text-lg font-semibold mb-4">📊 Выручка по категориям</h3>
             <div className="w-full h-64 md:h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={categoryData} margin={{ top: 10, right: 10, left: 0, bottom: 60}}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis
-                  dataKey="name"
-                  angle={-45}
-                  textAnchor="end"
-                  interval={0}
-                  height={80}
-                  tick={{ fontSize: 12, fill: '#1F2937', fontWeight: 600 }}
-                />
-                <YAxis
-                  tickFormatter={(v) => `${v / 1000}K`}
-                  tick={{ fontSize: 12, fill: '#1F2937', fontWeight: 600 }}
-                />
-                <Tooltip formatter={(v) => formatCurrency(Number(v))} />
-                <Bar dataKey="total" fill="#3B82F6" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={categoryData} margin={{ top: 10, right: 10, left: 0, bottom: 60 }}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis
+                    dataKey="name"
+                    angle={-45}
+                    textAnchor="end"
+                    interval={0}
+                    height={80}
+                    tick={{ fontSize: 12, fill: '#1F2937', fontWeight: 600 }}
+                  />
+                  <YAxis
+                    tickFormatter={(v) => `${v / 1000}K`}
+                    tick={{ fontSize: 12, fill: '#1F2937', fontWeight: 600 }}
+                  />
+                  <Tooltip formatter={(v) => formatCurrency(Number(v))} />
+                  <Bar dataKey="total" fill="#3B82F6" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
-        </div>
 
           <div className="bg-white p-4 md:p-6 rounded-xl shadow-md">
             <h3 className="text-base md:text-lg font-semibold mb-4">💳 Способы оплаты</h3>
             <div className="w-full h-64 md:h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={paymentData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={true}
-                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                  outerRadius={80}
-                  dataKey="value"
-                />
-                <Tooltip formatter={(v) => formatCurrency(Number(v))} />
-              </PieChart>
-            </ResponsiveContainer>
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={paymentData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={true}
+                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                    outerRadius={80}
+                    dataKey="value"
+                  />
+                  <Tooltip formatter={(v) => formatCurrency(Number(v))} />
+                </PieChart>
+              </ResponsiveContainer>
             </div>
           </div>
         </div>
@@ -348,27 +348,46 @@ export const Dashboard = () => {
           <div className="px-4 md:px-6 py-4 bg-gray-50 border-b">
             <h3 className="text-base md:text-lg font-semibold text-gray-700">📋 Детализация по категориям</h3>
           </div>
-          <div className="overflow-x-auto">
+
+          {/* Десктоп: таблица */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Категория</th>
-                  <th className="px-4 md:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Кол-во</th>
-                  <th className="px-4 md:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Выручка</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Категория</th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Кол-во</th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Выручка</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {categoryData.map((cat: any) => (
                   <tr key={cat.name} className="hover:bg-gray-50">
-                    <td className="px-4 md:px-6 py-4 text-sm text-gray-900">{cat.name}</td>
-                    <td className="px-4 md:px-6 py-4 text-sm text-gray-900 text-right">{cat.count} шт.</td>
-                    <td className="px-4 md:px-6 py-4 text-sm text-gray-900 text-right font-medium">
+                    <td className="px-6 py-4 text-sm text-gray-900">{cat.name}</td>
+                    <td className="px-6 py-4 text-sm text-gray-900 text-right">{cat.count} шт.</td>
+                    <td className="px-6 py-4 text-sm text-gray-900 text-right font-medium">
                       {formatCurrency(Number(cat.total) || 0)}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Мобильный: карточки */}
+          <div className="md:hidden divide-y divide-gray-200">
+            {categoryData.map((cat: any) => (
+              <div key={cat.name} className="p-4">
+                <div className="font-medium text-gray-900 mb-2">{cat.name}</div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Кол-во:</span>
+                  <span className="text-gray-900">{cat.count} шт.</span>
+                </div>
+                <div className="flex justify-between text-sm mt-1">
+                  <span className="text-gray-500">Выручка:</span>
+                  <span className="text-gray-900 font-medium">{formatCurrency(Number(cat.total) || 0)}</span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
