@@ -27,6 +27,7 @@ export const Dashboard = () => {
   const [periodLabel, setPeriodLabel] = useState<string>('');
   const [lastUpdate, setLastUpdate] = useState<string>('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileActionsOpen, setMobileActionsOpen] = useState(false);
 
   const fetchData = () => {
     const token = localStorage.getItem('access_token');
@@ -155,21 +156,65 @@ export const Dashboard = () => {
               </p>
             )}
           </div>
-          <div className="flex flex-wrap gap-2 md:gap-3 md:justify-end">
-            <button onClick={() => fetchData()} className="bg-gray-200 text-gray-700 px-3 md:px-4 py-2 rounded-lg hover:bg-gray-300 text-sm md:text-base">
+
+          {/* Десктоп: кнопки в строку */}
+          <div className="hidden md:flex flex-wrap gap-2 md:gap-3 md:justify-end">
+            <button onClick={() => fetchData()} className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300">
               🔄 Обновить
             </button>
-            <button onClick={handleZReport} className="bg-green-600 text-white px-3 md:px-4 py-2 rounded-lg hover:bg-green-700 text-sm md:text-base">
+            <button onClick={handleZReport} className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
               📥 Z-отчёт
             </button>
             {canSeeComparison && (
-              <a href="/comparison" className="bg-blue-600 text-white px-3 md:px-4 py-2 rounded-lg hover:bg-blue-700 text-sm md:text-base">📊 Сравнить</a>
+              <a href="/comparison" className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">📊 Сравнить</a>
             )}
-            <button onClick={handleLogout} className="bg-red-600 text-white px-3 md:px-4 py-2 rounded-lg hover:bg-red-700 text-sm md:text-base">🚪 Выйти</button>
+            <button onClick={handleLogout} className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700">🚪 Выйти</button>
+          </div>
+
+          {/* Мобильный: гамбургер */}
+          <div className="md:hidden relative">
+            <button
+              onClick={() => setMobileActionsOpen(!mobileActionsOpen)}
+              className="w-full flex justify-between items-center bg-white text-gray-700 px-4 py-2 rounded-lg border border-gray-300"
+            >
+              <span>☰ Действия</span>
+              <span>{mobileActionsOpen ? '▲' : '▼'}</span>
+            </button>
+
+            {mobileActionsOpen && (
+              <div className="absolute z-20 w-full mt-1 bg-white rounded-lg shadow-lg border border-gray-200">
+                <button
+                  onClick={() => { fetchData(); setMobileActionsOpen(false); }}
+                  className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700"
+                >
+                  🔄 Обновить
+                </button>
+                <button
+                  onClick={() => { handleZReport(); setMobileActionsOpen(false); }}
+                  className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700"
+                >
+                  📥 Z-отчёт
+                </button>
+                {canSeeComparison && (
+                  <a
+                    href="/comparison"
+                    className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700"
+                  >
+                    📊 Сравнить
+                  </a>
+                )}
+                <button
+                  onClick={() => { handleLogout(); setMobileActionsOpen(false); }}
+                  className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
+                >
+                  🚪 Выйти
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Десктоп: кнопки в строку */}
+        {/* Десктоп: кнопки фильтра в строку */}
         <div className="hidden md:flex flex-wrap gap-2 mb-4">
           <button
             onClick={() => setPeriod('today')}
@@ -209,7 +254,7 @@ export const Dashboard = () => {
           </button>
         </div>
 
-        {/* Мобильный: выпадающий список */}
+        {/* Мобильный: выпадающий список фильтра */}
         <div className="md:hidden mb-4 relative">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
