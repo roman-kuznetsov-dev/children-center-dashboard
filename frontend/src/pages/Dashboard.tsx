@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, ResponsiveContainer } from 'recharts';
 import axios from 'axios';
 
 const API_URL = 'http://127.0.0.1:8000';
@@ -299,13 +299,9 @@ export const Dashboard = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-6">
           <div className="bg-white p-4 md:p-6 rounded-xl shadow-md">
             <h3 className="text-base md:text-lg font-semibold mb-4">📊 Выручка по категориям</h3>
-            <div style={{ width: '100%', overflowX: 'auto' }}>
-              <BarChart
-                width={550}
-                height={350}
-                data={categoryData}
-                margin={{ top: 10, right: 10, left: 0, bottom: 60 }}
-              >
+            <div className="w-full h-64 md:h-80">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={categoryData} margin={{ top: 10, right: 10, left: 0, bottom: 60}}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
                   dataKey="name"
@@ -313,22 +309,24 @@ export const Dashboard = () => {
                   textAnchor="end"
                   interval={0}
                   height={80}
-                  tick={{ fontSize: 14, fill: '#1F2937', fontWeight: 600 }}
+                  tick={{ fontSize: 12, fill: '#1F2937', fontWeight: 600 }}
                 />
                 <YAxis
                   tickFormatter={(v) => `${v / 1000}K`}
-                  tick={{ fontSize: 14, fill: '#1F2937', fontWeight: 600 }}
+                  tick={{ fontSize: 12, fill: '#1F2937', fontWeight: 600 }}
                 />
                 <Tooltip formatter={(v) => formatCurrency(Number(v))} />
                 <Bar dataKey="total" fill="#3B82F6" radius={[4, 4, 0, 0]} />
               </BarChart>
-            </div>
+            </ResponsiveContainer>
           </div>
+        </div>
 
           <div className="bg-white p-4 md:p-6 rounded-xl shadow-md">
             <h3 className="text-base md:text-lg font-semibold mb-4">💳 Способы оплаты</h3>
-            <div style={{ width: '100%', overflowX: 'auto' }}>
-              <PieChart width={500} height={350}>
+            <div className="w-full h-64 md:h-80">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
                 <Pie
                   data={paymentData}
                   cx="50%"
@@ -340,6 +338,7 @@ export const Dashboard = () => {
                 />
                 <Tooltip formatter={(v) => formatCurrency(Number(v))} />
               </PieChart>
+            </ResponsiveContainer>
             </div>
           </div>
         </div>
