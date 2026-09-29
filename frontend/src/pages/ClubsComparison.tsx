@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, ResponsiveContainer } from 'recharts';
 import axios from 'axios';
 
 const API_URL = 'http://127.0.0.1:8000';
@@ -423,30 +423,38 @@ export const ClubsComparison = () => {
 </div>
 
         {/* График сравнения */}
-        <div className="bg-white p-6 rounded-xl shadow-md mb-6">
-          <h3 className="text-lg font-semibold mb-4">📊 Выручка по категориям (сравнение клубов)</h3>
-          <div style={{ width: '100%', overflowX: 'auto' }}>
-            <BarChart
-              width={900}
-              height={400}
-              data={chartData}
-              margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis tickFormatter={(v) => `${v / 1000}K`} />
-              <Tooltip formatter={(v) => formatCurrency(Number(v))} />
-              <Legend />
-              <Bar dataKey="Праздники" fill="#3B82F6" />
-              <Bar dataKey="Мастер-классы" fill="#10B981" />
-              <Bar dataKey="Аквагрим" fill="#8B5CF6" />
-              <Bar dataKey="Кафе" fill="#F59E0B" />
-              <Bar dataKey="Игрушки" fill="#EC4899" />
-              <Bar dataKey="Гости" fill="#06B6D4" />
-            </BarChart>
-          </div>
-        </div>
-
+<div className="bg-white p-4 md:p-6 rounded-xl shadow-md mb-6">
+  <h3 className="text-base md:text-lg font-semibold mb-4">📊 Выручка по категориям (сравнение клубов)</h3>
+  <div className="w-full h-80 md:h-96">
+    <ResponsiveContainer width="100%" height="100%">
+      <BarChart
+        data={chartData}
+        margin={{ top: 20, right: 20, left: 10, bottom: 60 }}
+      >
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis
+          dataKey="name"
+          angle={-45}
+          textAnchor="end"
+          interval={0}
+          height={80}
+          tick={{ fontSize: 12, fill: '#1F2937', fontWeight: 600 }}
+        />
+        <YAxis
+          tickFormatter={(v) => `${v / 1000}K`}
+          tick={{ fontSize: 12, fill: '#1F2937', fontWeight: 600 }}
+        />
+        <Tooltip formatter={(v) => formatCurrency(Number(v))} />
+        <Bar dataKey="Праздники" fill="#3B82F6" />
+        <Bar dataKey="Мастер-классы" fill="#10B981" />
+        <Bar dataKey="Аквагрим" fill="#8B5CF6" />
+        <Bar dataKey="Кафе" fill="#F59E0B" />
+        <Bar dataKey="Игрушки" fill="#EC4899" />
+        <Bar dataKey="Гости" fill="#06B6D4" />
+      </BarChart>
+    </ResponsiveContainer>
+  </div>
+</div>
         {/* Круговые диаграммы */}
         <div className="bg-white p-6 rounded-xl shadow-md">
           <h3 className="text-lg font-semibold mb-4">💳 Способы оплаты по клубам</h3>
