@@ -281,40 +281,78 @@ export const ClubsComparison = () => {
         )}
 
         {/* Общая таблица */}
-        <div className="bg-white rounded-xl shadow-md overflow-hidden mb-6">
-          <div className="px-6 py-4 bg-gray-50 border-b">
-            <h2 className="text-lg font-semibold text-gray-700">Общие показатели</h2>
+<div className="bg-white rounded-xl shadow-md overflow-hidden mb-6">
+  <div className="px-4 md:px-6 py-4 bg-gray-50 border-b">
+    <h2 className="text-base md:text-lg font-semibold text-gray-700">Общие показатели</h2>
+  </div>
+
+  {/* Десктоп: таблица */}
+  <div className="hidden md:block overflow-x-auto">
+    <table className="min-w-full divide-y divide-gray-200">
+      <thead className="bg-gray-50">
+        <tr>
+          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Клуб</th>
+          <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Выручка</th>
+          <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Наличные</th>
+          <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Безнал</th>
+          <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">QR-код</th>
+          <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Гости</th>
+        </tr>
+      </thead>
+      <tbody className="bg-white divide-y divide-gray-200">
+        {data.map((club: any, index: number) => (
+          <tr key={index} className={club.total_revenue === maxRevenue ? 'bg-green-50' : ''}>
+            <td className="px-6 py-4 text-sm font-medium text-gray-900">
+              {club.club_name} {club.total_revenue === maxRevenue && '🏆'}
+            </td>
+            <td className="px-6 py-4 text-sm text-gray-900 text-right font-bold">{formatCurrency(club.total_revenue)}</td>
+            <td className="px-6 py-4 text-sm text-gray-900 text-right">{formatCurrency(club.cash)}</td>
+            <td className="px-6 py-4 text-sm text-gray-900 text-right">{formatCurrency(club.card)}</td>
+            <td className="px-6 py-4 text-sm text-gray-900 text-right">{formatCurrency(club.qr)}</td>
+            <td className="px-6 py-4 text-sm text-gray-900 text-right">{club.total_guests}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  {/* Мобильный: карточки */}
+  <div className="md:hidden divide-y divide-gray-200">
+    {data.map((club: any, index: number) => (
+      <div
+        key={index}
+        className={`p-4 ${club.total_revenue === maxRevenue ? 'bg-green-50' : ''}`}
+      >
+        <div className="font-medium text-gray-900 mb-3 flex items-center justify-between">
+          <span>{club.club_name}</span>
+          {club.total_revenue === maxRevenue && <span>🏆</span>}
+        </div>
+        <div className="space-y-1 text-sm">
+          <div className="flex justify-between">
+            <span className="text-gray-500">Выручка:</span>
+            <span className="text-gray-900 font-bold">{formatCurrency(club.total_revenue)}</span>
           </div>
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Клуб</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Выручка</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Наличные</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Безнал</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">QR-код</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Гости</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {data.map((club: any, index: number) => (
-                  <tr key={index} className={club.total_revenue === maxRevenue ? 'bg-green-50' : ''}>
-                    <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                      {club.club_name} {club.total_revenue === maxRevenue && '🏆'}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-900 text-right font-bold">{formatCurrency(club.total_revenue)}</td>
-                    <td className="px-6 py-4 text-sm text-gray-900 text-right">{formatCurrency(club.cash)}</td>
-                    <td className="px-6 py-4 text-sm text-gray-900 text-right">{formatCurrency(club.card)}</td>
-                    <td className="px-6 py-4 text-sm text-gray-900 text-right">{formatCurrency(club.qr)}</td>
-                    <td className="px-6 py-4 text-sm text-gray-900 text-right">{club.total_guests}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="flex justify-between">
+            <span className="text-gray-500">Наличные:</span>
+            <span className="text-gray-900">{formatCurrency(club.cash)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-500">Безнал:</span>
+            <span className="text-gray-900">{formatCurrency(club.card)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-500">QR-код:</span>
+            <span className="text-gray-900">{formatCurrency(club.qr)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-500">Гости:</span>
+            <span className="text-gray-900">{club.total_guests}</span>
           </div>
         </div>
-
+      </div>
+    ))}
+  </div>
+</div>
         {/* Детализация по категориям */}
         <div className="bg-white rounded-xl shadow-md overflow-hidden mb-6">
           <div className="px-6 py-4 bg-gray-50 border-b">
