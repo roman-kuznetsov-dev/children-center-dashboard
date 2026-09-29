@@ -354,41 +354,73 @@ export const ClubsComparison = () => {
   </div>
 </div>
         {/* Детализация по категориям */}
-        <div className="bg-white rounded-xl shadow-md overflow-hidden mb-6">
-          <div className="px-6 py-4 bg-gray-50 border-b">
-            <h2 className="text-lg font-semibold text-gray-700">📋 Детализация по категориям</h2>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Категория</th>
-                  {data.map((club: any, index: number) => (
-                    <th key={index} className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
-                      {club.club_name}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {Object.keys(CATEGORY_NAMES).map((catKey) => (
-                  <tr key={catKey} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 text-sm text-gray-900 font-medium">{CATEGORY_NAMES[catKey]}</td>
-                    {data.map((club: any, index: number) => {
-                      const count = club.categories_count?.[catKey] || 0;
-                      const total = club.categories?.[catKey] || 0;
-                      return (
-                        <td key={index} className="px-6 py-4 text-sm text-gray-900 text-right">
-                          {count} шт. / {formatCurrency(total)}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+<div className="bg-white rounded-xl shadow-md overflow-hidden mb-6">
+  <div className="px-4 md:px-6 py-4 bg-gray-50 border-b">
+    <h2 className="text-base md:text-lg font-semibold text-gray-700">📋 Детализация по категориям</h2>
+  </div>
+
+  {/* Десктоп: таблица */}
+  <div className="hidden md:block overflow-x-auto">
+    <table className="min-w-full divide-y divide-gray-200">
+      <thead className="bg-gray-50">
+        <tr>
+          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Категория</th>
+          {data.map((club: any, index: number) => (
+            <th key={index} className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+              {club.club_name}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody className="bg-white divide-y divide-gray-200">
+        {Object.keys(CATEGORY_NAMES).map((catKey) => (
+          <tr key={catKey} className="hover:bg-gray-50">
+            <td className="px-6 py-4 text-sm text-gray-900 font-medium">{CATEGORY_NAMES[catKey]}</td>
+            {data.map((club: any, index: number) => {
+              const count = club.categories_count?.[catKey] || 0;
+              const total = club.categories?.[catKey] || 0;
+              return (
+                <td key={index} className="px-6 py-4 text-sm text-gray-900 text-right">
+                  {count} шт. / {formatCurrency(total)}
+                </td>
+              );
+            })}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  {/* Мобильный: карточки по категориям */}
+  <div className="md:hidden divide-y divide-gray-200">
+    {Object.keys(CATEGORY_NAMES).map((catKey) => (
+      <div key={catKey} className="p-4">
+        <div className="font-medium text-gray-900 mb-3">
+          {CATEGORY_NAMES[catKey]}
         </div>
+        <div className="space-y-2">
+          {data.map((club: any, index: number) => {
+            const count = club.categories_count?.[catKey] || 0;
+            const total = club.categories?.[catKey] || 0;
+            return (
+              <div key={index} className="bg-gray-50 rounded-lg p-3">
+                <div className="text-sm font-medium text-gray-900 mb-1">{club.club_name}</div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Кол-во:</span>
+                  <span className="text-gray-900">{count} шт.</span>
+                </div>
+                <div className="flex justify-between text-sm mt-1">
+                  <span className="text-gray-500">Выручка:</span>
+                  <span className="text-gray-900 font-medium">{formatCurrency(total)}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
 
         {/* График сравнения */}
         <div className="bg-white p-6 rounded-xl shadow-md mb-6">
