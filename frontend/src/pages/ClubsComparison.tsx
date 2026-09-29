@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, ResponsiveContainer } from 'recharts';
 import axios from 'axios';
 
 const API_URL = 'http://127.0.0.1:8000';
@@ -36,6 +36,8 @@ export const ClubsComparison = () => {
   const [customDate, setCustomDate] = useState<string>(formatDate(new Date()));
   const [periodLabel, setPeriodLabel] = useState<string>('');
   const [lastUpdate, setLastUpdate] = useState<string>('');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileActionsOpen, setMobileActionsOpen] = useState(false);
 
   const fetchData = () => {
     const token = localStorage.getItem('access_token');
@@ -125,62 +127,151 @@ export const ClubsComparison = () => {
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="max-w-7xl mx-auto">
         {/* Заголовок */}
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-800">📊 Сравнение клубов</h1>
-            {lastUpdate && (
-              <p className="text-xs text-gray-400 mt-1">
-                Обновлено: {lastUpdate} (автообновление каждые 5 сек)
-              </p>
-            )}
-          </div>
-          <div className="flex gap-3">
-            <button onClick={() => fetchData()} className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300">
-              🔄 Обновить
-            </button>
-            <a href="/dashboard" className="text-blue-600 hover:text-blue-800 py-2">← На главную</a>
-          </div>
-        </div>
+<div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-4 md:mb-6">
+  <div>
+    <h1 className="text-2xl md:text-3xl font-bold text-gray-800">📊 Сравнение клубов</h1>
+    {lastUpdate && (
+      <p className="text-xs text-gray-400 mt-1">
+        Обновлено: {lastUpdate} (автообновление каждые 5 сек)
+      </p>
+    )}
+  </div>
 
-        {/* Фильтр по датам */}
-        <div className="flex flex-wrap gap-2 mb-4">
-          <button
-            onClick={() => setPeriod('today')}
-            className={`px-4 py-2 rounded-lg ${period === 'today' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
-          >
-            📅 Сегодня
-          </button>
-          <button
-            onClick={() => setPeriod('current_month')}
-            className={ ` px-4 py-2 rounded-lg ${period === 'current_month' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'} `}
-          >
-            📆 Текущий месяц
-          </button>
-          <button
-            onClick={() => setPeriod('month')}
-            className={`px-4 py-2 rounded-lg ${period === 'month' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
-          >
-            📆 Прошлый месяц
-          </button>
-          <button
-            onClick={() => setPeriod('week')}
-            className={`px-4 py-2 rounded-lg ${period === 'week' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
-          >
-            📅 Прошлая неделя
-          </button>
-          <button
-            onClick={() => {
-              const date = prompt('Введите дату в формате ГГГГ-ММ-ДД:', formatDate(new Date()));
-              if (date) {
-                setCustomDate(date);
-                setPeriod('custom');
-              }
-            }}
-            className={`px-4 py-2 rounded-lg ${period === 'custom' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
-          >
-            🔍 Выбрать дату
-          </button>
-        </div>
+  {/* Десктоп: кнопки в строку */}
+  <div className="hidden md:flex gap-3 md:justify-end">
+    <button onClick={() => fetchData()} className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300">
+      🔄 Обновить
+    </button>
+    <a href="/dashboard" className="text-blue-600 hover:text-blue-800 py-2">← На главную</a>
+  </div>
+
+  {/* Мобильный: гамбургер */}
+  <div className="md:hidden relative">
+    <button
+      onClick={() => setMobileActionsOpen(!mobileActionsOpen)}
+      className="w-full flex justify-between items-center bg-white text-gray-700 px-4 py-2 rounded-lg border border-gray-300"
+    >
+      <span>☰ Действия</span>
+      <span>{mobileActionsOpen ? '▲' : '▼'}</span>
+    </button>
+
+    {mobileActionsOpen && (
+      <div className="absolute z-20 w-full mt-1 bg-white rounded-lg shadow-lg border border-gray-200">
+        <button
+          onClick={() => { fetchData(); setMobileActionsOpen(false); }}
+          className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700"
+        >
+          🔄 Обновить
+        </button>
+        <a
+          href="/dashboard"
+          className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-blue-600"
+        >
+          ← На главную
+        </a>
+      </div>
+    )}
+  </div>
+</div>
+
+        {/* Десктоп: кнопки фильтра в строку */}
+<div className="hidden md:flex flex-wrap gap-2 mb-4">
+  <button
+    onClick={() => setPeriod('today')}
+    className={`px-4 py-2 rounded-lg ${period === 'today' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
+  >
+    📅 Сегодня
+  </button>
+  <button
+    onClick={() => setPeriod('current_month')}
+    className={`px-4 py-2 rounded-lg ${period === 'current_month' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
+  >
+    📆 Текущий месяц
+  </button>
+  <button
+    onClick={() => setPeriod('month')}
+    className={`px-4 py-2 rounded-lg ${period === 'month' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
+  >
+    📆 Прошлый месяц
+  </button>
+  <button
+    onClick={() => setPeriod('week')}
+    className={`px-4 py-2 rounded-lg ${period === 'week' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
+  >
+    📅 Прошлая неделя
+  </button>
+  <button
+    onClick={() => {
+      const date = prompt('Введите дату в формате ГГГГ-ММ-ДД:', formatDate(new Date()));
+      if (date) {
+        setCustomDate(date);
+        setPeriod('custom');
+      }
+    }}
+    className={`px-4 py-2 rounded-lg ${period === 'custom' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
+  >
+    🔍 Выбрать дату
+  </button>
+</div>
+
+{/* Мобильный: выпадающий список фильтра */}
+<div className="md:hidden mb-4 relative">
+  <button
+    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+    className="w-full flex justify-between items-center bg-white text-gray-700 px-4 py-2 rounded-lg border border-gray-300"
+  >
+    <span>
+      {period === 'today' && '📅 Сегодня'}
+      {period === 'current_month' && '📆 Текущий месяц'}
+      {period === 'month' && '📆 Прошлый месяц'}
+      {period === 'week' && '📅 Прошлая неделя'}
+      {period === 'custom' && '🔍 Выбранная дата'}
+    </span>
+    <span>{mobileMenuOpen ? '▲' : '▼'}</span>
+  </button>
+
+  {mobileMenuOpen && (
+    <div className="absolute z-10 w-full mt-1 bg-white rounded-lg shadow-lg border border-gray-200">
+      <button
+        onClick={() => { setPeriod('today'); setMobileMenuOpen(false); }}
+        className={`w-full text-left px-4 py-2 hover:bg-gray-100 ${period === 'today' ? 'bg-blue-50 text-blue-600' : 'text-gray-700'}`}
+      >
+        📅 Сегодня
+      </button>
+      <button
+        onClick={() => { setPeriod('current_month'); setMobileMenuOpen(false); }}
+        className={`w-full text-left px-4 py-2 hover:bg-gray-100 ${period === 'current_month' ? 'bg-blue-50 text-blue-600' : 'text-gray-700'}`}
+      >
+        📆 Текущий месяц
+      </button>
+      <button
+        onClick={() => { setPeriod('month'); setMobileMenuOpen(false); }}
+        className={`w-full text-left px-4 py-2 hover:bg-gray-100 ${period === 'month' ? 'bg-blue-50 text-blue-600' : 'text-gray-700'}`}
+      >
+        📆 Прошлый месяц
+      </button>
+      <button
+        onClick={() => { setPeriod('week'); setMobileMenuOpen(false); }}
+        className={`w-full text-left px-4 py-2 hover:bg-gray-100 ${period === 'week' ? 'bg-blue-50 text-blue-600' : 'text-gray-700'}`}
+      >
+        📅 Прошлая неделя
+      </button>
+      <button
+        onClick={() => {
+          const date = prompt('Введите дату в формате ГГГГ-ММ-ДД:', formatDate(new Date()));
+          if (date) {
+            setCustomDate(date);
+            setPeriod('custom');
+            setMobileMenuOpen(false);
+          }
+        }}
+        className={`w-full text-left px-4 py-2 hover:bg-gray-100 ${period === 'custom' ? 'bg-blue-50 text-blue-600' : 'text-gray-700'}`}
+      >
+        🔍 Выбрать дату
+      </button>
+    </div>
+  )}
+</div>
 
         {/* Период */}
         {periodLabel && (
@@ -190,106 +281,184 @@ export const ClubsComparison = () => {
         )}
 
         {/* Общая таблица */}
-        <div className="bg-white rounded-xl shadow-md overflow-hidden mb-6">
-          <div className="px-6 py-4 bg-gray-50 border-b">
-            <h2 className="text-lg font-semibold text-gray-700">Общие показатели</h2>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Клуб</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Выручка</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Наличные</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Безнал</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">QR-код</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Гости</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {data.map((club: any, index: number) => (
-                  <tr key={index} className={club.total_revenue === maxRevenue ? 'bg-green-50' : ''}>
-                    <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                      {club.club_name} {club.total_revenue === maxRevenue && '🏆'}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-900 text-right font-bold">{formatCurrency(club.total_revenue)}</td>
-                    <td className="px-6 py-4 text-sm text-gray-900 text-right">{formatCurrency(club.cash)}</td>
-                    <td className="px-6 py-4 text-sm text-gray-900 text-right">{formatCurrency(club.card)}</td>
-                    <td className="px-6 py-4 text-sm text-gray-900 text-right">{formatCurrency(club.qr)}</td>
-                    <td className="px-6 py-4 text-sm text-gray-900 text-right">{club.total_guests}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+<div className="bg-white rounded-xl shadow-md overflow-hidden mb-6">
+  <div className="px-4 md:px-6 py-4 bg-gray-50 border-b">
+    <h2 className="text-base md:text-lg font-semibold text-gray-700">Общие показатели</h2>
+  </div>
 
-        {/* Детализация по категориям */}
-        <div className="bg-white rounded-xl shadow-md overflow-hidden mb-6">
-          <div className="px-6 py-4 bg-gray-50 border-b">
-            <h2 className="text-lg font-semibold text-gray-700">📋 Детализация по категориям</h2>
+  {/* Десктоп: таблица */}
+  <div className="hidden md:block overflow-x-auto">
+    <table className="min-w-full divide-y divide-gray-200">
+      <thead className="bg-gray-50">
+        <tr>
+          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Клуб</th>
+          <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Выручка</th>
+          <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Наличные</th>
+          <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Безнал</th>
+          <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">QR-код</th>
+          <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Гости</th>
+        </tr>
+      </thead>
+      <tbody className="bg-white divide-y divide-gray-200">
+        {data.map((club: any, index: number) => (
+          <tr key={index} className={club.total_revenue === maxRevenue ? 'bg-green-50' : ''}>
+            <td className="px-6 py-4 text-sm font-medium text-gray-900">
+              {club.club_name} {club.total_revenue === maxRevenue && '🏆'}
+            </td>
+            <td className="px-6 py-4 text-sm text-gray-900 text-right font-bold">{formatCurrency(club.total_revenue)}</td>
+            <td className="px-6 py-4 text-sm text-gray-900 text-right">{formatCurrency(club.cash)}</td>
+            <td className="px-6 py-4 text-sm text-gray-900 text-right">{formatCurrency(club.card)}</td>
+            <td className="px-6 py-4 text-sm text-gray-900 text-right">{formatCurrency(club.qr)}</td>
+            <td className="px-6 py-4 text-sm text-gray-900 text-right">{club.total_guests}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  {/* Мобильный: карточки */}
+  <div className="md:hidden divide-y divide-gray-200">
+    {data.map((club: any, index: number) => (
+      <div
+        key={index}
+        className={`p-4 ${club.total_revenue === maxRevenue ? 'bg-green-50' : ''}`}
+      >
+        <div className="font-medium text-gray-900 mb-3 flex items-center justify-between">
+          <span>{club.club_name}</span>
+          {club.total_revenue === maxRevenue && <span>🏆</span>}
+        </div>
+        <div className="space-y-1 text-sm">
+          <div className="flex justify-between">
+            <span className="text-gray-500">Выручка:</span>
+            <span className="text-gray-900 font-bold">{formatCurrency(club.total_revenue)}</span>
           </div>
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Категория</th>
-                  {data.map((club: any, index: number) => (
-                    <th key={index} className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
-                      {club.club_name}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {Object.keys(CATEGORY_NAMES).map((catKey) => (
-                  <tr key={catKey} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 text-sm text-gray-900 font-medium">{CATEGORY_NAMES[catKey]}</td>
-                    {data.map((club: any, index: number) => {
-                      const count = club.categories_count?.[catKey] || 0;
-                      const total = club.categories?.[catKey] || 0;
-                      return (
-                        <td key={index} className="px-6 py-4 text-sm text-gray-900 text-right">
-                          {count} шт. / {formatCurrency(total)}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="flex justify-between">
+            <span className="text-gray-500">Наличные:</span>
+            <span className="text-gray-900">{formatCurrency(club.cash)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-500">Безнал:</span>
+            <span className="text-gray-900">{formatCurrency(club.card)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-500">QR-код:</span>
+            <span className="text-gray-900">{formatCurrency(club.qr)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-500">Гости:</span>
+            <span className="text-gray-900">{club.total_guests}</span>
           </div>
         </div>
+      </div>
+    ))}
+  </div>
+</div>
+        {/* Детализация по категориям */}
+<div className="bg-white rounded-xl shadow-md overflow-hidden mb-6">
+  <div className="px-4 md:px-6 py-4 bg-gray-50 border-b">
+    <h2 className="text-base md:text-lg font-semibold text-gray-700">📋 Детализация по категориям</h2>
+  </div>
+
+  {/* Десктоп: таблица */}
+  <div className="hidden md:block overflow-x-auto">
+    <table className="min-w-full divide-y divide-gray-200">
+      <thead className="bg-gray-50">
+        <tr>
+          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Категория</th>
+          {data.map((club: any, index: number) => (
+            <th key={index} className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+              {club.club_name}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody className="bg-white divide-y divide-gray-200">
+        {Object.keys(CATEGORY_NAMES).map((catKey) => (
+          <tr key={catKey} className="hover:bg-gray-50">
+            <td className="px-6 py-4 text-sm text-gray-900 font-medium">{CATEGORY_NAMES[catKey]}</td>
+            {data.map((club: any, index: number) => {
+              const count = club.categories_count?.[catKey] || 0;
+              const total = club.categories?.[catKey] || 0;
+              return (
+                <td key={index} className="px-6 py-4 text-sm text-gray-900 text-right">
+                  {count} шт. / {formatCurrency(total)}
+                </td>
+              );
+            })}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  {/* Мобильный: карточки по категориям */}
+  <div className="md:hidden divide-y divide-gray-200">
+    {Object.keys(CATEGORY_NAMES).map((catKey) => (
+      <div key={catKey} className="p-4">
+        <div className="font-medium text-gray-900 mb-3">
+          {CATEGORY_NAMES[catKey]}
+        </div>
+        <div className="space-y-2">
+          {data.map((club: any, index: number) => {
+            const count = club.categories_count?.[catKey] || 0;
+            const total = club.categories?.[catKey] || 0;
+            return (
+              <div key={index} className="bg-gray-50 rounded-lg p-3">
+                <div className="text-sm font-medium text-gray-900 mb-1">{club.club_name}</div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Кол-во:</span>
+                  <span className="text-gray-900">{count} шт.</span>
+                </div>
+                <div className="flex justify-between text-sm mt-1">
+                  <span className="text-gray-500">Выручка:</span>
+                  <span className="text-gray-900 font-medium">{formatCurrency(total)}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
 
         {/* График сравнения */}
-        <div className="bg-white p-6 rounded-xl shadow-md mb-6">
-          <h3 className="text-lg font-semibold mb-4">📊 Выручка по категориям (сравнение клубов)</h3>
-          <div style={{ width: '100%', overflowX: 'auto' }}>
-            <BarChart
-              width={900}
-              height={400}
-              data={chartData}
-              margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis tickFormatter={(v) => `${v / 1000}K`} />
-              <Tooltip formatter={(v) => formatCurrency(Number(v))} />
-              <Legend />
-              <Bar dataKey="Праздники" fill="#3B82F6" />
-              <Bar dataKey="Мастер-классы" fill="#10B981" />
-              <Bar dataKey="Аквагрим" fill="#8B5CF6" />
-              <Bar dataKey="Кафе" fill="#F59E0B" />
-              <Bar dataKey="Игрушки" fill="#EC4899" />
-              <Bar dataKey="Гости" fill="#06B6D4" />
-            </BarChart>
-          </div>
-        </div>
-
+<div className="bg-white p-4 md:p-6 rounded-xl shadow-md mb-6">
+  <h3 className="text-base md:text-lg font-semibold mb-4">📊 Выручка по категориям (сравнение клубов)</h3>
+  <div className="w-full h-80 md:h-96">
+    <ResponsiveContainer width="100%" height="100%">
+      <BarChart
+        data={chartData}
+        margin={{ top: 20, right: 20, left: 10, bottom: 60 }}
+      >
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis
+          dataKey="name"
+          angle={-45}
+          textAnchor="end"
+          interval={0}
+          height={80}
+          tick={{ fontSize: 12, fill: '#1F2937', fontWeight: 600 }}
+        />
+        <YAxis
+          tickFormatter={(v) => `${v / 1000}K`}
+          tick={{ fontSize: 12, fill: '#1F2937', fontWeight: 600 }}
+        />
+        <Tooltip formatter={(v) => formatCurrency(Number(v))} />
+        <Bar dataKey="Праздники" fill="#3B82F6" />
+        <Bar dataKey="Мастер-классы" fill="#10B981" />
+        <Bar dataKey="Аквагрим" fill="#8B5CF6" />
+        <Bar dataKey="Кафе" fill="#F59E0B" />
+        <Bar dataKey="Игрушки" fill="#EC4899" />
+        <Bar dataKey="Гости" fill="#06B6D4" />
+      </BarChart>
+    </ResponsiveContainer>
+  </div>
+</div>
         {/* Круговые диаграммы */}
-        <div className="bg-white p-6 rounded-xl shadow-md">
-          <h3 className="text-lg font-semibold mb-4">💳 Способы оплаты по клубам</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white p-4 md:p-6 rounded-xl shadow-md">
+          <h3 className="text-base md:text-lg font-semibold mb-4">💳 Способы оплаты по клубам</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {data.map((club: any, index: number) => {
               const clubPaymentData = [
                 { name: 'Наличные', value: Number(club.cash) || 0, fill: '#3B82F6' },
@@ -300,7 +469,9 @@ export const ClubsComparison = () => {
               return (
                 <div key={index} className="bg-gray-50 rounded-xl p-4">
                   <h4 className="font-semibold text-center mb-2">{club.club_name}</h4>
-                  <PieChart width={250} height={200}>
+                  <div className="w-full h-56">
+                    <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
                     <Pie
                       data={clubPaymentData}
                       cx="50%"
@@ -310,7 +481,15 @@ export const ClubsComparison = () => {
                       label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
                     />
                     <Tooltip formatter={(v) => formatCurrency(Number(v))} />
+                    <Legend
+                    verticalAlign="bottom"
+                    aligh="center"
+                    iconType="circle"
+                    wrapperStyle={{ fontSize: '11px', paddingTop: '8px' }}
+                    />  
                   </PieChart>
+                    </ResponsiveContainer>
+                </div>
                 </div>
               );
             })}
