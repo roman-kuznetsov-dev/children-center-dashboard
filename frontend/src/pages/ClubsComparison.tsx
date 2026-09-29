@@ -456,9 +456,9 @@ export const ClubsComparison = () => {
   </div>
 </div>
         {/* Круговые диаграммы */}
-        <div className="bg-white p-6 rounded-xl shadow-md">
-          <h3 className="text-lg font-semibold mb-4">💳 Способы оплаты по клубам</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white p-4 md:p-6 rounded-xl shadow-md">
+          <h3 className="text-base md:text-lg font-semibold mb-4">💳 Способы оплаты по клубам</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {data.map((club: any, index: number) => {
               const clubPaymentData = [
                 { name: 'Наличные', value: Number(club.cash) || 0, fill: '#3B82F6' },
@@ -469,7 +469,9 @@ export const ClubsComparison = () => {
               return (
                 <div key={index} className="bg-gray-50 rounded-xl p-4">
                   <h4 className="font-semibold text-center mb-2">{club.club_name}</h4>
-                  <PieChart width={250} height={200}>
+                  <div className="w-full h-56">
+                    <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
                     <Pie
                       data={clubPaymentData}
                       cx="50%"
@@ -479,7 +481,15 @@ export const ClubsComparison = () => {
                       label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
                     />
                     <Tooltip formatter={(v) => formatCurrency(Number(v))} />
+                    <Legend
+                    verticalAlign="bottom"
+                    aligh="center"
+                    iconType="circle"
+                    wrapperStyle={{ fontSize: '11px', paddingTop: '8px' }}
+                    />  
                   </PieChart>
+                    </ResponsiveContainer>
+                </div>
                 </div>
               );
             })}
