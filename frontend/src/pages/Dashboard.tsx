@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, ResponsiveContainer, Legend } from 'recharts';
 import axios from 'axios';
 
 const API_URL = 'http://127.0.0.1:8000';
@@ -376,12 +376,13 @@ export const Dashboard = () => {
                     data={paymentData}
                     cx="50%"
                     cy="50%"
-                    labelLine={true}
-                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                    outerRadius={80}
+                    labelLine={false}
+                    label={({ percent }) => ` ${(percent * 100).toFixed(0)}%`}
+                    outerRadius={70}
                     dataKey="value"
                   />
                   <Tooltip formatter={(v) => formatCurrency(Number(v))} />
+                  <Legend />  
                 </PieChart>
               </ResponsiveContainer>
             </div>
