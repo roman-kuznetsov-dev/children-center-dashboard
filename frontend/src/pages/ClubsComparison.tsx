@@ -174,45 +174,104 @@ export const ClubsComparison = () => {
   </div>
 </div>
 
-        {/* Фильтр по датам */}
-        <div className="flex flex-wrap gap-2 mb-4">
-          <button
-            onClick={() => setPeriod('today')}
-            className={`px-4 py-2 rounded-lg ${period === 'today' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
-          >
-            📅 Сегодня
-          </button>
-          <button
-            onClick={() => setPeriod('current_month')}
-            className={ ` px-4 py-2 rounded-lg ${period === 'current_month' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'} `}
-          >
-            📆 Текущий месяц
-          </button>
-          <button
-            onClick={() => setPeriod('month')}
-            className={`px-4 py-2 rounded-lg ${period === 'month' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
-          >
-            📆 Прошлый месяц
-          </button>
-          <button
-            onClick={() => setPeriod('week')}
-            className={`px-4 py-2 rounded-lg ${period === 'week' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
-          >
-            📅 Прошлая неделя
-          </button>
-          <button
-            onClick={() => {
-              const date = prompt('Введите дату в формате ГГГГ-ММ-ДД:', formatDate(new Date()));
-              if (date) {
-                setCustomDate(date);
-                setPeriod('custom');
-              }
-            }}
-            className={`px-4 py-2 rounded-lg ${period === 'custom' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
-          >
-            🔍 Выбрать дату
-          </button>
-        </div>
+        {/* Десктоп: кнопки фильтра в строку */}
+<div className="hidden md:flex flex-wrap gap-2 mb-4">
+  <button
+    onClick={() => setPeriod('today')}
+    className={`px-4 py-2 rounded-lg ${period === 'today' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
+  >
+    📅 Сегодня
+  </button>
+  <button
+    onClick={() => setPeriod('current_month')}
+    className={`px-4 py-2 rounded-lg ${period === 'current_month' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
+  >
+    📆 Текущий месяц
+  </button>
+  <button
+    onClick={() => setPeriod('month')}
+    className={`px-4 py-2 rounded-lg ${period === 'month' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
+  >
+    📆 Прошлый месяц
+  </button>
+  <button
+    onClick={() => setPeriod('week')}
+    className={`px-4 py-2 rounded-lg ${period === 'week' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
+  >
+    📅 Прошлая неделя
+  </button>
+  <button
+    onClick={() => {
+      const date = prompt('Введите дату в формате ГГГГ-ММ-ДД:', formatDate(new Date()));
+      if (date) {
+        setCustomDate(date);
+        setPeriod('custom');
+      }
+    }}
+    className={`px-4 py-2 rounded-lg ${period === 'custom' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
+  >
+    🔍 Выбрать дату
+  </button>
+</div>
+
+{/* Мобильный: выпадающий список фильтра */}
+<div className="md:hidden mb-4 relative">
+  <button
+    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+    className="w-full flex justify-between items-center bg-white text-gray-700 px-4 py-2 rounded-lg border border-gray-300"
+  >
+    <span>
+      {period === 'today' && '📅 Сегодня'}
+      {period === 'current_month' && '📆 Текущий месяц'}
+      {period === 'month' && '📆 Прошлый месяц'}
+      {period === 'week' && '📅 Прошлая неделя'}
+      {period === 'custom' && '🔍 Выбранная дата'}
+    </span>
+    <span>{mobileMenuOpen ? '▲' : '▼'}</span>
+  </button>
+
+  {mobileMenuOpen && (
+    <div className="absolute z-10 w-full mt-1 bg-white rounded-lg shadow-lg border border-gray-200">
+      <button
+        onClick={() => { setPeriod('today'); setMobileMenuOpen(false); }}
+        className={`w-full text-left px-4 py-2 hover:bg-gray-100 ${period === 'today' ? 'bg-blue-50 text-blue-600' : 'text-gray-700'}`}
+      >
+        📅 Сегодня
+      </button>
+      <button
+        onClick={() => { setPeriod('current_month'); setMobileMenuOpen(false); }}
+        className={`w-full text-left px-4 py-2 hover:bg-gray-100 ${period === 'current_month' ? 'bg-blue-50 text-blue-600' : 'text-gray-700'}`}
+      >
+        📆 Текущий месяц
+      </button>
+      <button
+        onClick={() => { setPeriod('month'); setMobileMenuOpen(false); }}
+        className={`w-full text-left px-4 py-2 hover:bg-gray-100 ${period === 'month' ? 'bg-blue-50 text-blue-600' : 'text-gray-700'}`}
+      >
+        📆 Прошлый месяц
+      </button>
+      <button
+        onClick={() => { setPeriod('week'); setMobileMenuOpen(false); }}
+        className={`w-full text-left px-4 py-2 hover:bg-gray-100 ${period === 'week' ? 'bg-blue-50 text-blue-600' : 'text-gray-700'}`}
+      >
+        📅 Прошлая неделя
+      </button>
+      <button
+        onClick={() => {
+          const date = prompt('Введите дату в формате ГГГГ-ММ-ДД:', formatDate(new Date()));
+          if (date) {
+            setCustomDate(date);
+            setPeriod('custom');
+            setMobileMenuOpen(false);
+          }
+        }}
+        className={`w-full text-left px-4 py-2 hover:bg-gray-100 ${period === 'custom' ? 'bg-blue-50 text-blue-600' : 'text-gray-700'}`}
+      >
+        🔍 Выбрать дату
+      </button>
+    </div>
+  )}
+</div>
 
         {/* Период */}
         {periodLabel && (
