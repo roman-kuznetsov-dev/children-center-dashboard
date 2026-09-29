@@ -36,6 +36,8 @@ export const ClubsComparison = () => {
   const [customDate, setCustomDate] = useState<string>(formatDate(new Date()));
   const [periodLabel, setPeriodLabel] = useState<string>('');
   const [lastUpdate, setLastUpdate] = useState<string>('');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileActionsOpen, setMobileActionsOpen] = useState(false);
 
   const fetchData = () => {
     const token = localStorage.getItem('access_token');
@@ -125,22 +127,52 @@ export const ClubsComparison = () => {
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="max-w-7xl mx-auto">
         {/* Заголовок */}
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-800">📊 Сравнение клубов</h1>
-            {lastUpdate && (
-              <p className="text-xs text-gray-400 mt-1">
-                Обновлено: {lastUpdate} (автообновление каждые 5 сек)
-              </p>
-            )}
-          </div>
-          <div className="flex gap-3">
-            <button onClick={() => fetchData()} className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300">
-              🔄 Обновить
-            </button>
-            <a href="/dashboard" className="text-blue-600 hover:text-blue-800 py-2">← На главную</a>
-          </div>
-        </div>
+<div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-4 md:mb-6">
+  <div>
+    <h1 className="text-2xl md:text-3xl font-bold text-gray-800">📊 Сравнение клубов</h1>
+    {lastUpdate && (
+      <p className="text-xs text-gray-400 mt-1">
+        Обновлено: {lastUpdate} (автообновление каждые 5 сек)
+      </p>
+    )}
+  </div>
+
+  {/* Десктоп: кнопки в строку */}
+  <div className="hidden md:flex gap-3 md:justify-end">
+    <button onClick={() => fetchData()} className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300">
+      🔄 Обновить
+    </button>
+    <a href="/dashboard" className="text-blue-600 hover:text-blue-800 py-2">← На главную</a>
+  </div>
+
+  {/* Мобильный: гамбургер */}
+  <div className="md:hidden relative">
+    <button
+      onClick={() => setMobileActionsOpen(!mobileActionsOpen)}
+      className="w-full flex justify-between items-center bg-white text-gray-700 px-4 py-2 rounded-lg border border-gray-300"
+    >
+      <span>☰ Действия</span>
+      <span>{mobileActionsOpen ? '▲' : '▼'}</span>
+    </button>
+
+    {mobileActionsOpen && (
+      <div className="absolute z-20 w-full mt-1 bg-white rounded-lg shadow-lg border border-gray-200">
+        <button
+          onClick={() => { fetchData(); setMobileActionsOpen(false); }}
+          className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700"
+        >
+          🔄 Обновить
+        </button>
+        <a
+          href="/dashboard"
+          className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-blue-600"
+        >
+          ← На главную
+        </a>
+      </div>
+    )}
+  </div>
+</div>
 
         {/* Фильтр по датам */}
         <div className="flex flex-wrap gap-2 mb-4">
