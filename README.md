@@ -11,6 +11,7 @@
 - **Ролевая модель**: 5 типов пользователей с разным уровнем доступа
 - **Интеграция с ОФД** через Webhook (приём чеков от касс)
 - **Автообновление** дашборда каждые 5 секунд
+- **Адаптивная вёрстка** — страница входа, дашборд и страница сравнения корректно отображаются на мобильных и десктопах
 
 ## 🛠 Технологии
 
@@ -32,57 +33,122 @@
 - Vite
 
 ### Тестирование
-- pytest
-- pytest-django
+- pytest, pytest-django
+- Playwright (E2E-тесты фронтенда)
 - GitHub Actions (CI)
 
 ## 📁 Структура проекта
+
 ```
 
 my_dashboard/
-├── backend/              # Django-проект
-│   ├── settings.py       # Настройки
-│   ├── urls.py           # Маршруты
-│   ├── generate_real_data.py   # Генератор данных
-│   ├── simulate_ofd.py         # Имитатор касс
-│   └── auto_test.py            # Нагрузочный тест
-├── sales/                # Приложение «Продажи»
-│   ├── models.py         # SaleOrder, SaleItem, CashReceipt
-│   ├── views.py          # API: dashboard_summary, clubs_comparison, export_z_report
-│   ├── webhooks.py       # Приём чеков от ОФД
-│   └── tests/            # 24 теста
-├── users/                # Приложение «Пользователи»
-├── frontend/             # React-фронтенд
-│   └── src/
-│       ├── pages/        # Dashboard, ClubsComparison
-│       ├── components/   # Login, ProtectedRoute, AdminRoute
-│       └── api/          # Axios-клиент
-└── pytest.ini            # Конфигурация тестов
+├── backend/                      # Django-проект
+│   ├── settings.py               # Настройки
+│   ├── urls.py                   # Маршруты
+│   ├── generate_real_data.py     # Генератор данных
+│   ├── simulate_ofd.py           # Имитатор касс
+│   └── auto_test.py              # Нагрузочный тест
+├── sales/                        # Приложение «Продажи»
+│   ├── models.py                 # SaleOrder, SaleItem, CashReceipt
+│   ├── views.py                  # API: dashboard_summary, clubs_comparison, export_z_report
+│   ├── webhooks.py               # Приём чеков от ОФД
+│   └── tests/                    # 24 теста
+├── users/                        # Приложение «Пользователи»
+├── frontend/                     # React-фронтенд
+│   ├── src/
+│   │   ├── pages/                # Dashboard, ClubsComparison
+│   │   ├── components/           # Login, ProtectedRoute, AdminRoute
+│   │   └── api/                  # Axios-клиент
+│   └── tests/                    # 4 Playwright smoke-теста
+├── .github/workflows/
+│   ├── tests.yml                 # CI: Django-тесты
+│   └── playwright.yml            # CI: E2E-тесты
+└── pytest.ini                    # Конфигурация тестов
 
 ```
-📊 Демонстрация
 
-· Главная страница: KPI, графики, детализация по категориям
-· Страница сравнения: 4 клуба в одной таблице + графики
-· Z-отчёт: скачивается в Excel с 4 листами
+## 📊 Демонстрация
 
-🔐 Роли пользователей
+- **Главная страница**: KPI, графики, детализация по категориям
+- **Страница сравнения**: 4 клуба в одной таблице + графики
+- **Z-отчёт**: скачивается в Excel с 4 листами
 
-Роль Доступ
-Администратор сети Все 4 клуба + сравнение
-Руководитель (босс) Все 4 клуба + сравнение
-Управляющий Только свой клуб
-Старший смены Только свой клуб
-Кассир Только свой клуб
+## 🔐 Роли пользователей
 
-✅ Что реализовано
+| Роль | Доступ |
+|---|---|
+| Администратор сети | Все 4 клуба + сравнение |
+| Руководитель (босс) | Все 4 клуба + сравнение |
+| Управляющий | Только свой клуб |
+| Старший смены | Только свой клуб |
+| Кассир | Только свой клуб |
 
-· 24 автоматических теста (pytest)
-· GitHub Actions (CI) — тесты на каждый push
-· Webhook для приёма чеков от ОФД
-· Генератор реалистичных данных (~1500 продаж)
-· Нагрузочный тест (24 пользователя одновременно)
-· Автообновление дашборда
+## ✅ Что реализовано
+
+- 24 автоматических теста (pytest) для бэкенда
+- **4 E2E-теста (Playwright)** с моками API для фронтенда
+- **CI: два GitHub Actions workflow** — бэкенд-тесты и E2E-тесты
+- Webhook для приёма чеков от ОФД
+- Генератор реалистичных данных (~1500 продаж)
+- Нагрузочный тест (24 пользователя одновременно)
+- Автообновление дашборда
+- Адаптивная вёрстка (вход, дашборд, сравнение)
+
+## 🧪 Тестирование
+
+### Backend (Django)
+
+```bash
+cd backend
+pytest -v
+```
+
+· 24 теста (pytest + pytest-django)
+· CI: .github/workflows/tests.yml
+
+Frontend (Playwright)
+
+```bash
+cd frontend
+npm install
+npx playwright install chromium
+npx playwright test
+```
+
+· 4 E2E smoke-теста (Chromium)
+· API замокано — тесты не требуют запущенного бэкенда
+· Моки покрывают /api/token/, /api/orders/dashboard_summary/, /api/orders/clubs_comparison/
+· CI: .github/workflows/playwright.yml
+
+CI
+
+Оба workflow запускаются автоматически:
+
+· при открытии и обновлении pull request в main
+· при push в main (в том числе после merge PR)
+
+Зелёная галочка ✅ на PR означает, что прошли и бэкенд-тесты, и E2E-тесты.
+
+🚀 Разработка
+
+Проект использует стандартный git-flow:
+
+1. Создать ветку от main:
+   ```bash
+   git checkout -b feature/название-фичи
+   ```
+2. Внести изменения, закоммитить:
+   ```bash
+   git add <файлы>
+   git commit -m "type(scope): описание"
+   ```
+3. Запушить:
+   ```bash
+   git push -u origin feature/название-фичи
+   ```
+4. Открыть PR на GitHub.
+5. Дождаться зелёного CI.
+6. Смерджить в main (Squash and merge), удалить ветку.
 
 👤 Автор
 
@@ -91,3 +157,5 @@ my_dashboard/
 · GitHub: @roman-kuznetsov-dev
 
 ```
+
+---
