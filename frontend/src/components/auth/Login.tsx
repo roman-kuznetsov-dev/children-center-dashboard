@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
+
 export const Login: React.FC = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
@@ -15,7 +17,7 @@ export const Login: React.FC = () => {
     setError('');
 
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/token/', { username, password });
+      const response = await axios.post(`${API_URL}/api/token/`, { username, password });
       localStorage.setItem('access_token', response.data.access);
       localStorage.setItem('refresh_token', response.data.refresh);
       localStorage.setItem('username', username);
