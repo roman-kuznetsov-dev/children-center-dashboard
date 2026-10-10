@@ -2,7 +2,8 @@
 Тесты для Webhook и вспомогательных функций.
 """
 from django.test import TestCase
-from sales.webhooks import detect_category, PAYMENT_TYPE_MAP, CLUB_NAME_MAP
+
+from sales.webhooks import CLUB_NAME_MAP, PAYMENT_TYPE_MAP, detect_category
 
 
 class DetectCategoryTest(TestCase):

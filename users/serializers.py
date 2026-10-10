@@ -1,5 +1,7 @@
 from rest_framework import serializers
-from .models import User, Club
+
+from .models import Club, User
+
 
 class ClubSerializer(serializers.ModelSerializer):
     class Meta:

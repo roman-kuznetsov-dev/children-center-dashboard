@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
 from sales.views import SaleOrderViewSet
 from sales.webhooks import ofd_webhook
 from users.views import CurrentUserView  # Импортируем новое представление
