@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import SaleOrder, SaleItem, CashReceipt
+
+from .models import CashReceipt, SaleItem, SaleOrder
 
 
 class SaleItemInline(admin.TabularInline):
@@ -54,7 +55,7 @@ class CashReceiptAdmin(admin.ModelAdmin):
     search_fields = ('receipt_id',)
     readonly_fields = ('receipt_id', 'club', 'total_amount', 'payment_type', 'guests_count', 'raw_data', 'created_at', 'processed_at')
     date_hierarchy = 'created_at'
-    
+
     fieldsets = (
         ('Информация о чеке', {
             'fields': ('receipt_id', 'club', 'total_amount', 'payment_type', 'guests_count')

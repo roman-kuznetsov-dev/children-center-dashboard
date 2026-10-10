@@ -39,7 +39,6 @@ jobs:
           pip install -r backend/requirements.txt
 
       - name: Lint with Ruff
-        working-directory: backend
         run: |
           pip install ruff
           ruff check .

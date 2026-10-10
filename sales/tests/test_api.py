@@ -2,12 +2,13 @@
 Тесты API-эндпоинтов.
 """
 from decimal import Decimal
+
 from django.test import TestCase
 from django.utils import timezone
 from rest_framework.test import APIClient
 
+from sales.models import SaleItem, SaleOrder
 from users.models import Club, User
-from sales.models import SaleOrder, SaleItem
 
 
 class DashboardSummaryAPITest(TestCase):

@@ -7,7 +7,9 @@ exclude = [
     ".mypy_cache", ".pytest_cache", ".ruff_cache",
     ".venv", "venv", "__pycache__",
     "build", "dist",
+    "node_modules",
     "*/migrations/*.py",
+    "frontend",
 ]
 
 [tool.ruff.lint]
@@ -22,6 +24,9 @@ select = [
 ]
 
 ignore = [
-    "E501",  # line too long (у нас line-length=120, это ок)
-    "E402",  # module level import not at top of the file (нужно для Django-скриптов)
+    "E501",   # line too long (у нас line-length=120)
+    "E402",   # module level import not at top (нужно для Django-скриптов)
+    "RUF012", # mutable class attributes (Django/DRF сами так работают)
+    "FURB162", # timezone.replace('Z', '+00:00') — ложное срабатывание
+    "DJ012", # порядок эелементов в модели - слишком строгое правило
 ]

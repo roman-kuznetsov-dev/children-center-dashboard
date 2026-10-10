@@ -2,11 +2,12 @@
 Юнит-тесты для моделей.
 """
 from decimal import Decimal
+
 from django.test import TestCase
 from django.utils import timezone
 
+from sales.models import CashReceipt, SaleItem, SaleOrder
 from users.models import Club, User
-from sales.models import SaleOrder, SaleItem, CashReceipt
 
 
 class SaleItemModelTest(TestCase):

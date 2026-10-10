@@ -1,15 +1,15 @@
 import json
-from decimal import Decimal
 from datetime import datetime
+from decimal import Decimal
 
+from django.http import JsonResponse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 
-from .models import CashReceipt, SaleOrder, SaleItem
 from users.models import Club
 
+from .models import CashReceipt, SaleItem, SaleOrder
 
 # Маппинг названий клубов (из ОФД) на объекты Club в базе
 CLUB_NAME_MAP = {

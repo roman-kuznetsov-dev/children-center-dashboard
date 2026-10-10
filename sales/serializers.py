@@ -1,5 +1,7 @@
 from rest_framework import serializers
-from .models import SaleOrder, SaleItem
+
+from .models import SaleItem, SaleOrder
+
 
 class SaleItemSerializer(serializers.ModelSerializer):
     class Meta:
@@ -10,8 +12,8 @@ class SaleOrderSerializer(serializers.ModelSerializer):
     items = SaleItemSerializer(many=True, read_only=True)
     manager_name = serializers.CharField(source='manager.username', read_only=True)
     club_name = serializers.CharField(source='club.name', read_only=True)
-    
+
     class Meta:
         model = SaleOrder
-        fields = ['id', 'club', 'club_name', 'manager', 'manager_name', 'date', 
+        fields = ['id', 'club', 'club_name', 'manager', 'manager_name', 'date',
                   'total_amount', 'payment_type', 'guests_count', 'items']
