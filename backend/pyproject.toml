@@ -1,0 +1,27 @@
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+exclude = [
+    ".bzr", ".direnv", ".eggs", ".git", ".hg",
+    ".mypy_cache", ".pytest_cache", ".ruff_cache",
+    ".venv", "venv", "__pycache__",
+    "build", "dist",
+    "*/migrations/*.py",
+]
+
+[tool.ruff.lint]
+select = [
+    "F",   # Pyflakes
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "I",   # isort
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "DJ",  # flake8-django
+]
+
+ignore = [
+    "E501",  # line too long (у нас line-length=120, это ок)
+    "E402",  # module level import not at top of the file (нужно для Django-скриптов)
+]
