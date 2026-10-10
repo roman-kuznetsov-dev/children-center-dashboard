@@ -43,7 +43,7 @@ jobs:
           pip install ruff
           ruff check .
 
-      - name: Run tests
+      - name: Run tests with coverage
         env:
           SECRET_KEY: test-secret-key
           DEBUG: 'True'
@@ -53,4 +53,4 @@ jobs:
           DB_HOST: localhost
           DB_PORT: 5432
         run: |
-          pytest -v
+          pytest --cov=. --cov-report=term-missing --cov-fail-under=60

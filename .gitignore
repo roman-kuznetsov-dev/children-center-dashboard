@@ -31,3 +31,10 @@ Thumbs.db
 
 # Ruff
 .ruff_cache/
+
+# Coverage
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+*.cover
