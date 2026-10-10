@@ -30,3 +30,29 @@ ignore = [
     "FURB162", # timezone.replace('Z', '+00:00') — ложное срабатывание
     "DJ012", # порядок эелементов в модели - слишком строгое правило
 ]
+
+[tool.coverage.run]
+source = ["."]
+omit = [
+    "*/migrations/*",
+    "*/tests/*",
+    "*/test_*.py",
+    "backend/asgi.py",
+    "backend/wsgi.py",
+    "backend/auto_test.py",
+    "backend/generate_real_data.py",
+    "backend/simulate_ofd.py",
+    "backend/manual_webhook_test.py",
+    "manage.py",
+    "venv/*",
+    "frontend/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if __name__ == .__main__.:",
+    "raise NotImplementedError",
+]
+show_missing = true
+skip_covered = false
