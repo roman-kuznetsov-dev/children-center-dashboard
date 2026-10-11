@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, ResponsiveContainer, Legend } from 'recharts';
 import axios from 'axios';
 
@@ -29,7 +29,7 @@ export const Dashboard = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileActionsOpen, setMobileActionsOpen] = useState(false);
 
-  const fetchData = () => {
+  const fetchData = useCallback(() => {
     const token = localStorage.getItem('access_token');
     let startDate = '';
     let endDate = '';
@@ -72,12 +72,12 @@ export const Dashboard = () => {
         console.error('❌ Ошибка:', error);
         setLoading(false);
       });
-  };
+  }, [period, customDate]);
 
   useEffect(() => {
     setLoading(true);
     fetchData();
-  }, [period, customDate]);
+  }, [period, customDate, fetchData]);
 
   useEffect(() => {
     if (period !== 'today' && period !== 'current_month') return;
@@ -87,7 +87,7 @@ export const Dashboard = () => {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [period, customDate]);
+  }, [period, customDate, fetchData]);
 
   const handleLogout = () => {
     localStorage.clear();
