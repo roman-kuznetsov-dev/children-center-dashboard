@@ -130,3 +130,61 @@ class ClubsComparisonAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['club_name'], 'Космоклуб')
+class ExportZReportAPITest(TestCase):
+    """Тесты эндпоинта /api/orders/export_z_report/"""
+
+    def setUp(self):
+        self.client = APIClient()
+        self.club = Club.objects.create(name='Космоклуб', address='адрес')
+        self.admin = User.objects.create_user(
+            username='admin_test',
+            password='123',
+            role='admin',
+        )
+        # Заказ на сегодня — чтобы попал в отчёт
+        self.order = SaleOrder.objects.create(
+            club=self.club,
+            date=timezone.now(),
+            total_amount=Decimal('5000.00'),
+            payment_type='cash',
+            guests_count=3,
+        )
+        SaleItem.objects.create(
+            order=self.order,
+            category='entrance',
+            name='Входной билет',
+            quantity=3,
+            price=Decimal('500.00'),
+        )
+
+    def test_export_z_report_returns_xlsx(self):
+        """Z-отчёт возвращается как xlsx-файл"""
+        self.client.force_authenticate(user=self.admin)
+        today = timezone.now().date().isoformat()
+
+        response = self.client.get(f'/api/orders/export_z_report/?date={today}')
+
+        # 1. HTTP-ответ
+        self.assertEqual(response.status_code, 200)
+
+        # 2. Content-Type — Excel
+        self.assertEqual(
+            response['Content-Type'],
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        )
+
+        # 3. Content-Disposition — имя файла
+        self.assertIn('attachment', response['Content-Disposition'])
+        self.assertIn(f'z_report_{today}.xlsx', response['Content-Disposition'])
+
+        # 4. Тело начинается с PK — сигнатура xlsx (ZIP)
+        self.assertTrue(response.content.startswith(b'PK'))
+
+    def test_export_z_report_missing_date_returns_400(self):
+        """Отсутствие параметра date → 400"""
+        self.client.force_authenticate(user=self.admin)
+
+        response = self.client.get('/api/orders/export_z_report/')
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('error', response.json())
