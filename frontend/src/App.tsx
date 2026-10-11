@@ -4,6 +4,7 @@ import { Login } from './components/auth/Login';
 import { Dashboard } from './pages/Dashboard';
 import { ClubsComparison } from './pages/ClubsComparison';
 import { AdminRoute } from './components/common/AdminRoute';
+import { ProtectedRoute } from './components/common/ProtectedRoute';
 
 const queryClient = new QueryClient();
 
@@ -13,7 +14,14 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route
+           path="/dashboard"
+           element={
+             <ProtectedRoute>
+             <Dashboard />
+             </ProtectedRoute>
+           }
+          />   
           <Route
             path="/comparison"
             element={
