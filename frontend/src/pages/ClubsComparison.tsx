@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, ResponsiveContainer } from 'recharts';
 import axios from 'axios';
 
@@ -39,7 +39,7 @@ export const ClubsComparison = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileActionsOpen, setMobileActionsOpen] = useState(false);
 
-  const fetchData = () => {
+  const fetchData = useCallback(() => {
     const token = localStorage.getItem('access_token');
     let startDate = '';
     let endDate = '';
@@ -89,12 +89,12 @@ export const ClubsComparison = () => {
         setError('Ошибка загрузки данных');
         setLoading(false);
       });
-  };
+  }, [period, customDate]);
 
   useEffect(() => {
     setLoading(true);
     fetchData();
-  }, [period, customDate]);
+  }, [period, customDate, fetchData]);
 
   // Автообновление каждые 5 секунд (только если период = "Сегодня" и "Текущий месяц")
   useEffect(() => {
@@ -105,7 +105,7 @@ export const ClubsComparison = () => {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [period, customDate]);
+  }, [period, customDate, fetchData]);
 
   if (loading) return <div className="p-6 text-center text-xl">Загрузка...</div>;
   if (error) return <div className="p-6 text-center text-red-500 text-xl">{error}</div>;

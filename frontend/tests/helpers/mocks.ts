@@ -137,7 +137,6 @@ export async function mockApiWithDateFilter(page: Page): Promise<void> {
     // Для прошлого месяца / недели — другие
     // Логика простая: смотрим, за какой период запрос
 
-    const today = new Date().toISOString().split('T')[0];
 
     let dashboard;
     if (startDate === endDate) {
